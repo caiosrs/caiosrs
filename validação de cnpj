@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+//Adicionando a classe ao botão validar
+namespace ValidadorCnpj
+{
+    public class Validacao()
+    {
+        public bool validarCnpj(string cnpj)
+        {
+            int[] multiplicador1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int somador;
+            int resto;
+            string digito;
+            string cnpjAux;
+            cnpj = cnpj.Trim()
+            cnpj = cnpj.Replace(",", "").Replace("/", "").Replace("-", "");
+            if (cnpj.Length != 14)
+            {
+                return False;
+            }
+            else
+            {
+                cnpjAux = cnpj.Substring(0, 12);
+                somador = 0;
+                for (int i = 0; i < 12; i++)
+                {
+                    somador += int.Parse(cnpjAux[i].ToString()) * multiplicador1[i]);
+                }
+
+                resto = (somador % 11);
+                if (resto < 0)
+                    resto = 0;
+                else
+                    resto = 11 - resto;
+                digito = resto.ToString();
+                cnpjAux = cnpjAux + digito;
+                somador = 0;
+                for (int i = 0; i < 13; i++)
+                {
+                    somador += int.Parse(cnpjAux[i].ToString()) * multiplicador2[i]);
+                }
+
+                resto = (somador % 11);
+                if (resto< 0)
+                    resto = 0;
+                else
+                    resto = 11 - resto;
+                digito = digito + resto.ToString();
+                return  cnpj.EndsWith(digito)
+            }
+        }
+    }  
+ // outra parte 
+ using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+//Usando a classe para o botão validar
+namespace WindowsFormsApp2
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void maskedTextBox1_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        {
+
+        }
+
+        private void btnValidaCnpj_Click(object sender, EventArgs e)
+        {
+            Validacao valid = new Validacao();
+            mtbCnpj.TextMaskFormat = MaskFormat.IncludeLiterals;
+            string cnpj = mtbCnpj.Text;
+            bool verFal = valid.validarCnpj(cnpj);
+            if (verFal)
+                MessageBox.Show("CNPJ Válido!");
+            else
+                MessageBox.Show("CNPJ Inválido!");
+        }
+    }
+}
